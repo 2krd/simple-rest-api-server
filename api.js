@@ -4,7 +4,7 @@ var aws = require('./aws');
 
 this.testAWS = function(params, cb) {
   aws.testBucket(params, cb);
-}
+};
 
 /*
  * This is taken directly from the RethinkDB driver example
@@ -18,8 +18,9 @@ this.testDb = function(params, cb) {
       if(err) return cb(err);
       r.table('tv_shows').insert({ name: 'Star Trek TNG' }).run(conn, function(err, res)
       {
+        conn.close();
         if(err) return cb(err);
-        cb.call(null, null, res);
+        cb.call(null, null, res); // or just cb(null, res);
       });
     });
   });

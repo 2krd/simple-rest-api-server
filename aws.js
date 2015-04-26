@@ -38,4 +38,4 @@ this.testBucket = function(args, cb) {
 			}
 		});
 	});
-}
+};

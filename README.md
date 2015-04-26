@@ -39,3 +39,4 @@ Of course you're not bound to using the bundled features. For example you may ne
 ### TODOs:
 
 - More verbose README
+- Bundle and use the `debug` package

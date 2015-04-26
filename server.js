@@ -8,8 +8,9 @@ function respond(req, res, next) {
 }
 
 function callAPI(req, res, next) {
-  if(api[req.params.func] === undefined) throw new Error('Invalid API call');
-  api[req.params.func].call(null, req.params, function(err, result) {
+  var func = api[req.params.func];
+  if(func === undefined) throw new Error('Invalid API call');
+  func(req.params, function(err, result) {
     if(err) {
       res.json({ code: 500, message: err });
     } else {
