@@ -1,0 +1,27 @@
+{
+  "name": "@akakalab/server",
+  "version": "1.0.0",
+  "description": "Simple REST API server boilerplate to kickstart your serverside project. This is especially useful if you intend to go with the bundled features including restify, rethinkdb, aws-sdk, and figaro.",
+  "private": "true",
+  "scripts": {
+     "start": "node bootstrap.js"
+  },
+  "dependencies": {
+    "figaro": "^0.1.9",
+    "restify": "^3.0.2",
+    "rethinkdb": "^2.0.0",
+    "aws-sdk": "^2.1.25"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akakalab/simple-rest-api-server"
+  },
+  "bugs": "https://github.com/akakalab/simple-rest-api-server/issues",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "dk",
+      "email": "thesephi@gmail.com"
+    }
+  ]
+}
