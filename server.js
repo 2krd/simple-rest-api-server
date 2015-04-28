@@ -10,7 +10,7 @@ function respond(req, res, next) {
 function callAPI(req, res, next) {
   var func = api[req.params.func];
   if(func === undefined) throw new Error('Invalid API call');
-  func(req.params, function(err, result) {
+  func.call(api, req.params, function(err, result) {
     if(err) {
       res.json({ code: 500, message: err });
     } else {
