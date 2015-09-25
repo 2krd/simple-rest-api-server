@@ -1,6 +1,7 @@
 var config = require('./config');
 var restify = require('restify');
-var api = require('./api');
+var api = require('./api/v1/api');
+var h = require('./api/v1/helper');
 
 function respond(req, res, next) {
   res.send('hello ' + req.params.name);
@@ -8,19 +9,38 @@ function respond(req, res, next) {
 }
 
 function callAPI(req, res, next) {
-  var func = api[req.params.func];
-  if(func === undefined) throw new Error('Invalid API call');
-  func.call(api, req.params, function(err, result) {
-    if(err) {
-      res.json({ code: 500, message: err });
-    } else {
-      console.log('API call succeeded');
+  var funcName = req.params[0];
+  var func = api[funcName];
+  if(func === undefined) return next(new restify.NotFoundError('Invalid API call'));
+  // TODO: consider adding authentication parameters to req.params here (taken from req.header for example)
+  // TODO: sanitize the params before proceeding (no pun intended, but NoSQL Injection anyone?)
+  try {
+    func.call(api, req.params, function(err, result) {
+      if(err) {
+        console.log('API call to `' + funcName + '` error');
+        console.log(err);
+        var errCode = err.statusCode || 500;
+        var errMsg = err;
+        if(!h.isString(err) && 'body' in err)
+          errMsg = err['body']; // return a single string or the body of restify.RestError instance
+        res.json(errCode, { code: errCode, message: errMsg });
+        return next(err); // you might not want this here if `callAPI` is supposed to be the last handler in the chain
+      }
+      console.log('API call to `' + funcName + '` successful');
       console.log(result);
-      res.json({ code: 200, message: result });
-    }
-  });
+      var retCode = result.statusCode || 200;
+      res.json(retCode, { code: retCode, message: result });
+      return next(); // you might not want this here if `callAPI` is supposed to be the last handler in the chain
+    });
+  } catch(e) {
+    return next(e);
+  }
 }
 
+var server = restify.createServer({
+  name: process.env.npm_package_name || 'Simple REST API Server',
+  version: process.env.npm_package_version || '0.0.0'
+});
 server.use(restify.CORS()); // consider disabling this on production
 server.use(restify.queryParser()); // note the order matters (queryParser, then bodyParser)
 server.use(restify.bodyParser());
@@ -41,8 +61,8 @@ function optionsRoute(req, res, next) {
 server.opts('/\.*/', corsHandler, optionsRoute);
 server.get('/hello/:name', respond);
 server.head('/hello/:name', respond);
-server.get('/api/:func', callAPI);
+server.get(/api\/(.*)/, callAPI); // note how we use a RegExp here, not a String like the above cases
 
 server.listen(config.appport, function() {
-  console.log('%s listening at %s', server.name, server.url);
+  console.log('%s %s listening at %s', server.name, server.versions, server.url);
 });

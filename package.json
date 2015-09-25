@@ -4,13 +4,13 @@
   "description": "Simple REST API server boilerplate to kickstart your serverside project. This is especially useful if you intend to go with the bundled features including restify, rethinkdb, aws-sdk, and figaro.",
   "private": "true",
   "scripts": {
-     "start": "node bootstrap.js"
+    "start": "node bootstrap.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.1.25",
     "figaro": "^0.1.9",
-    "restify": "^3.0.2",
-    "rethinkdb": "^2.0.0",
-    "aws-sdk": "^2.1.25"
+    "restify": "^4.0.3",
+    "rethinkdb": "^2.0.0"
   },
   "repository": {
     "type": "git",

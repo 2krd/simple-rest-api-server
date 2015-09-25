@@ -1,6 +1,14 @@
-var config = require('./config');
+var config = require('../../config');
 var r = require('rethinkdb');
-var aws = require('./aws');
+var aws = require('../../aws');
+
+this.testFunction = function(params, cb) {
+  return cb(null, 'This is a function, it returns a String');
+};
+
+this.testErrorFunction = function(params, cb) {
+  return cb('This function returns an error!');
+};
 
 this.testAWS = function(params, cb) {
   aws.testBucket(params, cb);
