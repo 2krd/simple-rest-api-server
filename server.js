@@ -31,7 +31,7 @@ function callAPI(req, res, next) {
       return res.json(retCode, { code: retCode, message: result });
     });
   } catch(e) {
-    return res(e);
+    return res.json(500, e);
   }
 }
 
