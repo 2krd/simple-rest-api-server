@@ -23,17 +23,15 @@ function callAPI(req, res, next) {
         var errMsg = err;
         if(!h.isString(err) && 'body' in err)
           errMsg = err['body']; // return a single string or the body of restify.RestError instance
-        res.json(errCode, { code: errCode, message: errMsg });
-        return next(err); // you might not want this here if `callAPI` is supposed to be the last handler in the chain
+        return res.json(errCode, { code: errCode, message: errMsg });
       }
       console.log('API call to `' + funcName + '` successful');
       console.log(result);
       var retCode = result.statusCode || 200;
-      res.json(retCode, { code: retCode, message: result });
-      return next(); // you might not want this here if `callAPI` is supposed to be the last handler in the chain
+      return res.json(retCode, { code: retCode, message: result });
     });
   } catch(e) {
-    return next(e);
+    return res(e);
   }
 }
 
