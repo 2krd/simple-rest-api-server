@@ -19,19 +19,34 @@ function callAPI(req, res, next) {
       if(err) {
         console.log('API call to `' + funcName + '` error');
         console.log(err);
-        var errCode = err.statusCode || 500;
-        var errMsg = err;
-        if(!h.isString(err) && 'body' in err)
-          errMsg = err['body']; // return a single string or the body of restify.RestError instance
-        return res.json(errCode, { code: errCode, message: errMsg });
+        err = mapErr(err);
+        return res.json(err.code, { code: err.code, message: err.msg });
       }
       console.log('API call to `' + funcName + '` successful');
       console.log(result);
       var retCode = result.statusCode || 200;
       return res.json(retCode, { code: retCode, message: result });
     });
-  } catch(e) {
-    return res.json(500, e);
+  } catch(err) {
+    console.log('API call to `' + funcName + '` error');
+    console.log(err);
+    err = mapErr(err);
+    return res.json(err.code, { code: err.code, message: err.msg });
+  }
+}
+
+/*
+ * returns a standardized error object with fields 'code' and 'msg'
+ * so that it can be consumed consistently by callAPI()
+ */
+function mapErr(err) {
+  var errCode = err.statusCode || 500;
+  var errMsg = err;
+  if(!h.isString(err) && 'body' in err)
+    errMsg = err['body']; // return a single string or the body of restify.RestError instance
+  return {
+    code: errCode,
+    msg: errMsg
   }
 }
 
