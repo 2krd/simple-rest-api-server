@@ -24,7 +24,9 @@ function callAPI(req, res, next) {
       }
       console.log('API call to `' + funcName + '` successful');
       console.log(result);
-      var retCode = result.statusCode || 200;
+
+      // RethinkDB might return `null`, in which case we have to treat it properly
+      var retCode = (result)? result.statusCode || 200 : 404;
       return res.json(retCode, { code: retCode, message: result });
     });
   } catch(err) {
